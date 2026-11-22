@@ -1,6 +1,6 @@
-# hg8145v5-mcp
+# hg8145v5-toolkit
 
-A small resident service for the Huawei **HG8145V5** GPON ONT. One static ARM binary gives the modem:
+A toolkit for the Huawei **HG8145V5** GPON ONT. One small resident service (`hg8145v5-mcp`, a static ARM binary) gives the modem:
 
 - **An MCP server** (stdio) and the **same tools over a LAN-only HTTP API**: system and CPU, memory,
   storage, interfaces, Wi-Fi clients, SIP registration, connections, and a few guarded actions.
