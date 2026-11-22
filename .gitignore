@@ -1,0 +1,22 @@
+# Local settings and secrets: never commit
+service.env
+*.env
+cred*
+*.pem
+*.key
+
+# Device exports, flash dumps and binaries
+*backup*
+*.bin
+*.img
+*ctree*.xml
+
+# Build output
+bin/
+dist/
+*.exe
+
+# Noise
+*.log
+.DS_Store
+Thumbs.db

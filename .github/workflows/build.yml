@@ -1,0 +1,53 @@
+name: Build
+
+# Cross-compiles the ARM binary and uploads it as an artifact. It only compiles Go source: it
+# never reads, needs or has access to any device configuration or credential.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      # go.sum is not committed; `go mod tidy` resolves it from the versions pinned in go.mod.
+      - name: Resolve dependencies
+        run: go mod tidy
+
+      - name: Vet
+        run: go vet ./...
+
+      # GOARM=5 (soft float) on purpose: the device kernel reports no VFP/NEON, and a
+      # GOARM=7 build dies with SIGILL there.
+      - name: Cross-compile for ARM soft-float
+        env:
+          GOOS: linux
+          GOARCH: arm
+          GOARM: "5"
+          CGO_ENABLED: "0"
+        run: |
+          mkdir -p bin
+          go build -trimpath -ldflags="-s -w" -o bin/hg8145v5-mcp-arm5 .
+          ls -la bin
+
+      - name: Report binary size
+        run: |
+          size=$(stat -c%s bin/hg8145v5-mcp-arm5)
+          echo "Binary size: $size bytes"
+          if [ "$size" -gt 9000000 ]; then
+            echo "::warning::Binary is over 9MB; check it against the device's free flash before installing."
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hg8145v5-mcp-arm5
+          path: bin/hg8145v5-mcp-arm5
+          retention-days: 30
