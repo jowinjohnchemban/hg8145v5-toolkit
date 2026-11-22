@@ -10,8 +10,9 @@
 - **LAN only.** The API binds to the LAN bridge address, not the WAN. The DNS filter only answers LAN
   clients. Nothing is published to the internet and there is no cloud dependency; the only outbound
   traffic is the optional block-list download.
-- **Privacy.** Responses and logs carry no IP address, MAC address, hostname, SSID, process command line
-  or queried domain name. The DNS filter keeps counters only.
+- **Privacy.** Responses and logs carry no IP address, hostname, SSID, process command line
+  or queried domain name. The one exception: the audit log (`actions.log`, mode 0600, on the device only)
+  records the MAC you pass to `wifi_kick_client`. The DNS filter keeps counters only.
 - **Fail open.** Optional features never block the gateway: if the filter or a list fails, DNS goes straight
   to the modem's own resolver.
 

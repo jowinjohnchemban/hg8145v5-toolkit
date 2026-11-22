@@ -92,7 +92,7 @@ it. The stdio MCP interface is not reachable from the network at all.
 
 ## Data
 
-Privacy rule throughout: no IP address, MAC address, hostname, SSID, or process command line is ever
+Privacy rule throughout: no IP address, hostname, SSID, or process command line is ever
 returned. Ports are listed without the addresses they are bound to; processes by name and memory only.
 
 ### `system_info`

@@ -433,7 +433,18 @@ func startAPIServer(addrReady chan<- string) {
 		if addrReady != nil {
 			addrReady <- addr
 		}
-		if err := http.ListenAndServe(addr, hostGuard(mux)); err != nil {
+		// Explicit timeouts and a header cap: a slow or stalled LAN client must not be able to
+		// hold connections open on a device with this little memory.
+		srv := &http.Server{
+			Addr:              addr,
+			Handler:           hostGuard(mux),
+			ReadHeaderTimeout: 5 * time.Second,
+			ReadTimeout:       10 * time.Second,
+			WriteTimeout:      20 * time.Second,
+			IdleTimeout:       30 * time.Second,
+			MaxHeaderBytes:    8 << 10,
+		}
+		if err := srv.ListenAndServe(); err != nil {
 			log.Printf("api: failed to listen on %s: %v", addr, err)
 		}
 	}()

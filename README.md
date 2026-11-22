@@ -14,7 +14,7 @@ A small resident service for the Huawei **HG8145V5** GPON ONT. One static ARM bi
 - No change to the vendor's files: it runs from `/mnt/jffs2` and a supported boot hook.
 - LAN only. No cloud, no relay. The only outbound traffic is the optional block-list download.
 - Fail open: an optional feature can never take the gateway's DNS, Wi-Fi or phone down.
-- Private by design: no addresses, MACs, hostnames or queried domain names in responses or logs.
+- Private by design: no addresses, hostnames or queried domain names in responses or logs (the audit log records only the MAC you ask it to kick).
 
 ## Tools
 
