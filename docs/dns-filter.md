@@ -36,6 +36,14 @@ need a browser and are ignored.
 
 ## Choosing lists
 
+**Recommended: one combined list.** [dns-blocklist](https://github.com/jowinjohnchemban/dns-blocklist) is a
+companion project that merges StevenBlack, HaGeZi, uBlock Origin's DNS-usable rules and URLhaus malware
+hosts into one deduplicated file, rebuilt daily by GitHub Actions. It refuses to publish if a source fails,
+the size changes sharply, or a protected popular site would be blocked, and its allow list fixes false
+positives for everyone. The router downloads one 6 MB file instead of six and parses about 246,000 entries
+in a few seconds. Set `FILTER_LISTS` to its `list.txt` URL (see `service.env.example`). The rest of this
+section explains the individual sources it is built from, so you can also load them yourself.
+
 `FILTER_LISTS` takes any number of URLs, comma-separated; the lists are combined. Use the *Adblock* format
 (`||domain^`) where a project offers it: it means "this domain and all its subdomains", which is how
 wildcard lists such as [HaGeZi's](https://github.com/hagezi/dns-blocklists) are meant to be used. A hosts file
