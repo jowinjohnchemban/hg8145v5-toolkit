@@ -36,13 +36,23 @@ need a browser and are ignored.
 
 ## Choosing lists
 
-**Recommended: one combined list.** [dns-blocklist](https://github.com/jowinjohnchemban/dns-blocklist) is a
-companion project that merges StevenBlack, HaGeZi, uBlock Origin's DNS-usable rules and URLhaus malware
-hosts into one deduplicated file, rebuilt daily by GitHub Actions. It refuses to publish if a source fails,
-the size changes sharply, or a protected popular site would be blocked, and its allow list fixes false
-positives for everyone. The router downloads one 6 MB file instead of six and parses about 246,000 entries
-in a few seconds. Set `FILTER_LISTS` to its `list.txt` URL (see `service.env.example`). The rest of this
-section explains the individual sources it is built from, so you can also load them yourself.
+**Recommended: the default list from [dns-blocklist](https://github.com/jowinjohnchemban/dns-blocklist).**
+It is an independent companion project that merges StevenBlack, HaGeZi, uBlock Origin, EasyList and
+EasyPrivacy, and URLhaus into one deduplicated file, rebuilt daily by GitHub Actions and published as a
+release. It refuses to publish if a source fails, the size changes sharply, or a protected popular site would
+be blocked, and it is tuned not to interrupt things apps depend on. Set `FILTER_LISTS` to
+
+```
+https://github.com/jowinjohnchemban/dns-blocklist/releases/latest/download/list.txt
+```
+
+(see `service.env.example`). Its `strict.txt` adds analytics and device telemetry and is more likely to
+break apps; per-category lists (`ads.txt`, `malware.txt`, ...) also exist.
+
+Measured on this device with the default list (about 378,000 entries, an 8 MB download): the filter process
+holds about 14 MB resident and peaks near 20 MB while parsing, with roughly 70 MB of the modem's 240 MB RAM
+still free. The list is held in RAM only, so the modem's flash is not touched. The rest of this section
+explains the individual sources, so you can also load them yourself.
 
 `FILTER_LISTS` takes any number of URLs, comma-separated; the lists are combined. Use the *Adblock* format
 (`||domain^`) where a project offers it: it means "this domain and all its subdomains", which is how
