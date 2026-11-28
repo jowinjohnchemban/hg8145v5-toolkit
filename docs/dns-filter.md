@@ -31,7 +31,7 @@ re-downloaded at start and every `FILTER_REFRESH_HOURS` (default 24). If a downl
 blocked (DNS keeps working) and the previous list is kept; at start the download retries every 10 seconds.
 
 Supported syntax: hosts files, plain domain lists, and the whole-domain subset of uBlock/ABP syntax
-(`||example.com^`, `@@||example.com^` for exceptions). Cosmetic filters, URL-path rules and scriptlets
+(`||example.com^`, `||example.com^$all`, `@@||example.com^` for exceptions). Cosmetic filters, URL-path rules and scriptlets
 need a browser and are ignored.
 
 ## Choosing lists
@@ -56,6 +56,20 @@ Measured on the device (ARM, soft float):
   `doubleclick.net` and `googleadservices.com`), and StevenBlack lacks much of what HaGeZi covers
   (telemetry and tracker families). Together they cover both.
 - **Licences.** The lists are downloaded at runtime and not redistributed here. Check each project's
+
+### uBlock Origin (Raymond Hill's uAssets) and malware lists
+
+uBlock's own filter lists are about 98% browser-level rules (cosmetic filters, URL paths, scriptlets,
+per-site and third-party options) that a DNS filter cannot apply. The parser therefore takes only what DNS can
+express: plain `||domain^` rules and `||domain^$all` (every request type, the same as a domain block). Rules
+with any other option are skipped, never widened, so a `||site^$3p` or `$doc` rule can never block a whole
+site by accident.
+
+Measured: the usable subset of uAssets `filters.txt`, `badware.txt`, `privacy.txt` and `resource-abuse.txt` is
+about 1,270 domains, of which only about 180 are new on top of StevenBlack and HaGeZi. The malware-hosts
+list from [malware-filter](https://gitlab.com/malware-filter/malware-filter) (built from abuse.ch URLhaus) adds about 2,300 live
+malware hosts as exact names, about 2,100 of them new. Peter Lowe's list adds almost nothing (5 of 3,566 new)
+and is not worth loading. None of these contained any of the 95 popular sites checked.
   licence before bundling any list.
 ## Avoiding false positives
 

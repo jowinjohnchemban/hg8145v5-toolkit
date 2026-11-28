@@ -237,6 +237,13 @@ func parseLine(line string) (domain string, allow, tree, ok bool) {
 	}
 	if strings.HasPrefix(line, "||") {
 		line = line[2:]
+		// uBlock's "$all" means "every request type", i.e. a plain block of the domain, which
+		// is exactly what a DNS block is. Every other option (third-party, document-only,
+		// per-site, redirects, badfilter, ...) narrows or changes the rule in a way DNS cannot
+		// express, so those rules are skipped rather than widened. Exceptions never take options.
+		if strings.HasSuffix(line, "^$all") && !allow {
+			line = strings.TrimSuffix(line, "$all")
+		}
 		if !strings.HasSuffix(line, "^") { // path, wildcard or option rule: not DNS-expressible
 			return
 		}
