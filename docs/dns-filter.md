@@ -34,6 +34,29 @@ Supported syntax: hosts files, plain domain lists, and the whole-domain subset o
 (`||example.com^`, `@@||example.com^` for exceptions). Cosmetic filters, URL-path rules and scriptlets
 need a browser and are ignored.
 
+## Choosing lists
+
+`FILTER_LISTS` takes any number of URLs, comma-separated; the lists are combined. Use the *Adblock* format
+(`||domain^`) where a project offers it: it means "this domain and all its subdomains", which is how
+wildcard lists such as [HaGeZi's](https://github.com/hagezi/dns-blocklists) are meant to be used. A hosts file
+entry matches the exact name only.
+
+Measured on the device (ARM, soft float):
+
+| List | Domains | Load time after start | Peak memory |
+|---|---|---|---|
+| StevenBlack `hosts` | about 76,000 | a few seconds | a few MB |
+| HaGeZi `adblock/multi.txt` | about 182,000 | about 6 s | about 13 MB |
+| Both together | about 264,000 | a few more seconds | well under the 48 MB soft limit |
+
+- **False positives:** with HaGeZi Multi loaded, none of 95 popular sites (Google, Microsoft, Apple, social,
+  streaming, developer, CDN, Indian banking and government sites) were blocked. Other tiers were not tested;
+  heavier tiers block more and are more likely to need entries in `FILTER_ALLOW_FILE`.
+- **Combine them.** HaGeZi's lists leave out some large ad domains that StevenBlack blocks (for example
+  `doubleclick.net` and `googleadservices.com`), and StevenBlack lacks much of what HaGeZi covers
+  (telemetry and tracker families). Together they cover both.
+- **Licences.** The lists are downloaded at runtime and not redistributed here. Check each project's
+  licence before bundling any list.
 ## Avoiding false positives
 
 - A hosts-file or bare-domain entry blocks **that exact name only**, as in Pi-hole. Only an explicit
