@@ -55,6 +55,7 @@ stop)
 	done
 	for p in $(ps | grep "[h]g8145v5-mcp-arm5" | awk '{print $1}'); do kill "$p"; done
 	"$BIN" -dns-cleanup # remove the optional DNS redirect, whatever state the process died in
+	"$BIN" -guard-remove # and the LAN-only firewall guard (it is re-applied at the next start)
 	echo stopped
 	;;
 status)

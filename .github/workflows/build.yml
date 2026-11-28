@@ -28,6 +28,9 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      - name: Test
+        run: go test ./...
+
       # GOARM=5 (soft float) on purpose: the device kernel reports no VFP/NEON, and a
       # GOARM=7 build dies with SIGILL there.
       - name: Cross-compile for ARM soft-float

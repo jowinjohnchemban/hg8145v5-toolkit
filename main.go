@@ -237,6 +237,10 @@ func main() {
 		removeTakeover()
 		return
 	}
+	if len(os.Args) > 1 && os.Args[1] == "-guard-remove" { // used by service.sh stop, see portguard.go
+		removeGuard()
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "-dns-watch" { // health watcher, see takeover.go
 		dnsWatch()
 		return
@@ -253,6 +257,7 @@ func main() {
 	apiAddrReady := make(chan string, 1)
 	startAPIServer(apiAddrReady)
 	startDNSFilter() // no-op unless FILTER_TAKEOVER/FILTER_PORT is set; see filter.go
+	startPortGuard() // every port we open is LAN-only at the firewall too; PORT_GUARD=off disables
 	go func() {
 		startMDNS(<-apiAddrReady)
 	}()

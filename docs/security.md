@@ -42,6 +42,20 @@ you. The stdio interface is not reachable from the network.
 
 Every attempt, allowed or refused, is written to `actions.log` beside the binary and to stderr.
 
+## Port guard: LAN-only at the firewall
+
+The modem's WAN side is not "the internet" in the simple sense: behind carrier-grade NAT it is the ISP's
+shared network, so other subscribers nearby may be able to reach whatever listens on it. The vendor firewall
+already drops SSH, Telnet and the web UI there. This service does the same for every port it adds (the
+HTTP API, the DNS filter and the mDNS responder), by default, in addition to refusing non-LAN clients in code.
+
+How it works (`portguard.go`): a chain `HG_GUARD` returns traffic from loopback and the LAN bridge and drops
+everything else, and one tagged jump per protocol and port sends traffic for our ports to it, for IPv4 and
+IPv6. It is a whitelist of the LAN rather than a list of WAN interface names, so it holds whatever the WAN
+interface is called. It is runtime-only, re-applied every 15 seconds in case the firmware rebuilds its
+firewall, built so the LAN can never be locked out while it updates, and does nothing at all if no LAN bridge
+is found. `PORT_GUARD=off` disables it; `service.sh stop` removes it.
+
 ## The DNS redirect
 
 A runtime firewall rule, tagged with a comment, removed on stop, on failure and by reboot. It is removed
